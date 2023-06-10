@@ -1,6 +1,6 @@
 {
   "name": "bs",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "private": true,
   "scripts": {
     "dev": "vite",
@@ -8,9 +8,13 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "vue": "^3.3.2"
+    "axios": "^1.4.0",
+    "vue": "^3.3.2",
+    "vue-router": "^4.2.2",
+    "vuex": "^4.1.0"
   },
   "devDependencies": {
+    "@arco-design/web-vue": "^2.47.1",
     "@vitejs/plugin-vue": "^4.2.3",
     "vite": "^4.3.5"
   }
