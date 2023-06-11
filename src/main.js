@@ -8,12 +8,12 @@ import ArcoVueIcon from '@arco-design/web-vue/es/icon';
 import router from "@/router/routers";
 import store from "@/store";
 import axios from 'axios';
-
+import '@/mock/index.js';
 import App from './App.vue';
 
 
 const config = {
-    baseURL: '/api/',
+    baseURL: '/api',
     timeout: 3000,
     headers: {
         'Content-Type': 'application/json',

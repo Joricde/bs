@@ -3,16 +3,16 @@ import { createStore } from 'vuex'
 
 const store = createStore({
     state: {
-        uid: "",
-        username: "",
+        staffId: "",
+        staffLevel: "",
         token: "",
     },
     mutations: {
-        setUserID(state, uid) {
-            state.uid = uid
+        setUserID(state, staffId) {
+            state.staffId = staffId
         },
-        setUsername(state, username) {
-            state.username = username
+        setUsername(state, staffLevel) {
+            state.staffLevel = staffLevel
         },
         setToken(state, token) {
             state.token = token

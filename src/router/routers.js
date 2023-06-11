@@ -13,7 +13,7 @@ import queryRecords from "@/components/bissness/QueryRecords.vue";
 import transMoney from "@/components/bissness/TransMoney.vue";
 import changePassword from "@/components/bissness/ChangePassword.vue";
 import closeAccount from "@/components/bissness/CloseAccount.vue";
-import buffer from "@/components/bissness/BufferTest.vue";
+import buffer from "@/test/BufferTest.vue";
 
 const routes = [
     {path: '/', component: IndexView},
