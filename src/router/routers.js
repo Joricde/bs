@@ -33,8 +33,6 @@ const routes = [
     {path: '/act/closeAccount',component: closeAccount},
     {path: '/act/message',component: ExecutionMS},
 
-
-
 ]
 
 const router = createRouter({

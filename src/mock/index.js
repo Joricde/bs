@@ -1,66 +1,50 @@
-
-// const Mock = require("mockjs")
 import Mock from 'mockjs'
 
 Mock.setup({ timeout: 300 })
 
-let cFuc = function (data) {
+let cFuc =  (data)=> {
     return {
-        'status|1': [200],  //[200, 301, 400, 404, 500, 501]
-        'message': 'success', //['success','error', 'warning']
+        'status|1': [200,400],  //[200, 301, 400, 404, 500, 501]
+        'message|1': ['success','error', 'warning'], // 'success',
         'data': data
     }
 }
 
-Mock.mock(cFuc({
-    userInfo: '@name',
-    accountId: /[1-9][0-9]{7}/,
-    'accountType|1': ['fixed', 'current'],
-    'balance|1': ['personal', 'company'],
-    time: () => Mock.Random.datetime()
-}))
 
-
-{
-      Mock.mock('/business/openAccount', 'get', cFuc({
+let req = {
+    '/api/business/openAccount':cFuc({
         userInfo: '@name',
         accountId: /[1-9][0-9]{7}/,
         'accountType|1': ['fixed', 'current'],
         'balance|1': ['personal', 'company'],
         time: () => Mock.Random.datetime()
-    }));
-// console.log(JSON.stringify(openAccount, null, 2))
-
-    Mock.mock('/business/saveMoney', 'get', cFuc({
+    }),
+    '/api/business/saveMoney':cFuc({
         userInfo: '@name',
         accountId: /[1-9][0-9]{7}/,
         'accountType|1': ['fixed', 'current'],
         'balance|1': ['personal', 'company'],
         time: Mock.Random.datetime()
-    }));
-
-     Mock.mock('/business/drawMoney', 'get', cFuc({
+    }),
+    '/api/business/drawMoney':cFuc({
         userInfo: '@name',
         accountId: /[1-9][0-9]{7}/,
         'accountType|1': ['fixed', 'current'],
         'balance|1': ['personal', 'company'],
         time: Mock.Random.datetime()
-    }));
-
-    Mock.mock('/business/queryAccount', 'get', cFuc({
+    }),
+    '/api/business/queryAccount':cFuc({
         userInfo: '@name',
         accountId: /[1-9][0-9]{7}/,
         'accountType|1': ['fixed', 'current'],
         'balance|1': ['personal', 'company'],
         time: Mock.Random.datetime()
-    }));
-
-    Mock.mock('/business/queryRecords', 'get', cFuc({
+    }),
+    '/api/business/queryRecords':cFuc({
         time: Mock.Random.datetime(),
         content: Mock.Random.paragraph()
-    }));
-
-     Mock.mock('/business/transMoney', 'get', cFuc({
+    }),
+    '/api/business/transMoney':cFuc({
         userInfo: '@name',
         accountId: /[1-9][0-9]{7}/,
         targetInfo: '@name',
@@ -68,39 +52,32 @@ Mock.mock(cFuc({
         'money|0-9999.2': 1.22,
         'balance|0-9999.2': 1.22,
         time: Mock.Random.datetime()
-    }));
-
-    Mock.mock('/api/business/closeAccount', 'get', cFuc({
+    }),
+    '/api/business/closeAccount':cFuc({
         time: Mock.Random.datetime()
-    }));
-}
-{
-     Mock.mock('/business/queryOperator', 'get', cFuc({
+    }),
+    '/api/business/queryOperator':cFuc({
         name: '@name',
         identification: /[0-9]{8}/,
-    }));
+    }),
+    '/api/business/addOperator':cFuc({
+        name: '@name',
+        identification: /[0-9]{8}/,
+    }),
 
-     Mock.mock('/business/addOperator', 'get', cFuc({
-        name: '@name',
-        identification: /[0-9]{8}/,
-    }));
-}
-{
-    Mock.mock('/staff/login', 'get', cFuc({
+    '/api/staff/login':cFuc({
         name: '@name',
         staffId: /[0-9]{8}/,
         'staffLevel|1': [1, 2, 999],
-        token: '@string',
-    }))
-
-    Mock.mock('/staff/logout', 'get', cFuc({
+        token: Mock.Random.paragraph(),
+    }),
+    '/api/staff/logout':cFuc({
         name: '@name',
         staffId: /[0-9]{8}/,
         'staffLevel|1': [1, 2, 999],
         token: Mock.Random.paragraph()
-    }))
-
-    Mock.mock('/staff/deptStaff', 'get', () => {
+    }),
+    '/api/staff/deptStaff':() => {
         let n = Mock.Random.integer(0, 99)
         let st = []
         for (let i = 0; i < n; i++) {
@@ -116,20 +93,20 @@ Mock.mock(cFuc({
             'number': n,
             'staff': st
         })
-    })
-
-    Mock.mock('/staff/dailyReport', 'get', cFuc({
+    },
+    '/api/staff/dailyReport':cFuc({
         time: Mock.Random.datetime(),
         content: Mock.Random.paragraph()
-    }))
-}
-{
-    Mock.mock('/admin/login', 'get', cFuc({
+    }),
+
+
+    '/api/admin/login':cFuc({
         adminId: /[0-9]{8}/,
         token: Mock.Random.paragraph()
-    }))
+    }),
+    '/api/admin/logout':cFuc({}),
 
-    Mock.mock('/admin/queryStaff', 'get', ()=>{
+    '/api/admin/queryStaff':()=>{
         let n = Mock.Random.integer(1,99)
         let arr = []
         for (let i = 0; i < n; i++) {
@@ -143,18 +120,18 @@ Mock.mock(cFuc({
         return cFuc({
             arr
         })
-    })
-    Mock.mock('/admin/allRecord', 'get', cFuc({
-        adminId: /[0-9]{8}/,
-        token: Mock.Random.paragraph()
-    }))
-
-    Mock.mock('/admin/allRecord', 'get', cFuc({
+    },
+    '/api/admin/allRecord': cFuc({
         time: Mock.Random.datetime(),
         content: Mock.Random.paragraph()
-    }))
-
+    })
 }
+
+for (let key in req) {
+    Mock.mock(key, 'post', req[key])
+}
+
+
 
 
 
