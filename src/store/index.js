@@ -1,22 +1,43 @@
-import { createStore } from 'vuex'
+import {createStore} from 'vuex'
+
+const defaultState = ()=>{
+    return {
+        staffData: {
+            name: sessionStorage.getItem('name')||"",
+            staffId: sessionStorage.getItem('staffId')||"",
+            staffLevel: sessionStorage.getItem('staffLevel')||"",
+        },
+        token: sessionStorage.getItem('token')||"",
+        adminId:sessionStorage.getItem('adminId')||"",
+    }
+}
 
 
 const store = createStore({
-    state: {
-        staffId: "",
-        staffLevel: "",
-        token: "",
-    },
+    state: defaultState(),
     mutations: {
-        setUserID(state, staffId) {
-            state.staffId = staffId
-        },
-        setUsername(state, staffLevel) {
-            state.staffLevel = staffLevel
-        },
         setToken(state, token) {
             state.token = token
+            sessionStorage.setItem('token',token)
         },
+        setStaff(state, staff) {
+            state.staffData.name = staff.name
+            sessionStorage.setItem('name',staff.name)
+            state.staffData.staffId = staff.staffId
+            sessionStorage.setItem('staffId',staff.staffId)
+            state.staffData.staffLevel = staff.staffLevel
+            sessionStorage.setItem('staffLevel',staff.staffLevel)
+        },
+        setAdminId(state, adminId){
+            state.adminId = adminId
+            sessionStorage.setItem('staffLevel',adminId)
+        },
+        clearState(state){
+            sessionStorage.clear()
+            Object.assign(state, defaultState())
+        }
+
+
     }
 })
 

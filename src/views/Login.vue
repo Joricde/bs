@@ -67,14 +67,14 @@
             <a-input
                 v-model.trim="formItem.adminID"
                 placeholder="请输入管理员ID"
-                :onFocus="onFocus">
+                :onFocus="onFocus2">
               <template #prefix>
                 <icon-user />
               </template>
             </a-input>
           </a-form-item>
           <a-form-item label="密码"
-                       field="password"
+                       field="a_password"
                        hide-asterisk
           >
             <a-input-password
@@ -94,8 +94,6 @@
   </a-card>
 </template>
 <script>
-
-import axios from "axios";
 
 export default {
   name: "LoginView",
@@ -126,25 +124,30 @@ export default {
           staffID: values.staffID,
           password: values.password
         }
-/*
-        axios.post("/staff/login", data)
+        that.$axios.post("/staff/login", data)
             .then((response) => {
               let res = response["data"]
-              if (res.code ===200){
+              if (res.status ===200){
                 that.$message.success({
                   content: res["message"]
                 })
                 that.$store.commit("setToken", res.data["token"])
-                console.log(that.$store.state.token)
-                that.$router.push("/home")
+                that.$store.commit("setStaff", res.data)
+                that.$router.push("/staff")
               }else {
-                that.$message.error(response["data"]["message"])
+                that.$message.error({
+                  content:res["message"]
+                })
+                that.$message.success({
+                  content: res["message"]
+                })
+
               }
             })
             .catch((error) => {
+              console.log(error)
               that.$message.error(error.response["data"]["message"])
             })
-*/
       }else {
         that.$message.error("提交内容为空")
       }
@@ -154,34 +157,35 @@ export default {
       if (!errors) {
         let data = {
           adminID: values.adminID,
-          password: values.a_password
+          a_password: values.a_password
         }
-        /*
-                axios.post("/admin/login", data)
-                    .then((response) => {
-                      let res = response["data"]
-                      if (res.code ===200){
-                        that.$message.success({
-                          content: res["message"]
-                        })
-                        that.$store.commit("setToken", res.data["token"])
-                        console.log(that.$store.state.token)
-                        that.$router.push("/home")
-                      }else {
-                        that.$message.error(response["data"]["message"])
-                      }
-                    })
-                    .catch((error) => {
-                      that.$message.error(error.response["data"]["message"])
-                    })
-        */
+        that.$axios.post("/admin/login", data)
+            .then((response) => {
+              let res = response["data"]
+              if (res.status ===200){
+                that.$message.success({
+                  content: res["message"]
+                })
+                that.$store.commit("setToken", res.data["token"])
+                that.$store.commit("setAdminId", res.data["adminId"])
+                that.$router.push("/admin")
+              }else {
+                that.$message.error(res["message"])
+              }
+            })
+            .catch((error) => {
+              that.$message.error(error.response["data"]["message"])
+            })
       }else {
         that.$message.error("提交内容为空")
       }
     },
     onFocus(){
-      this.$refs.loginFormRef.clearValidate()
+      this.$refs.staffLoginForm.clearValidate()
     },
+    onFocus2(){
+      this.$refs.adminLoginFormRef.clearValidate()
+    }
   },
 }
 

@@ -14,6 +14,7 @@ import transMoney from "@/components/bissness/TransMoney.vue";
 import changePassword from "@/components/bissness/ChangePassword.vue";
 import closeAccount from "@/components/bissness/CloseAccount.vue";
 import buffer from "@/test/BufferTest.vue";
+import ExecutionMS from "@/components/ExecutionMS.vue";
 
 const routes = [
     {path: '/', component: IndexView},
@@ -21,15 +22,16 @@ const routes = [
     {path: '/staff', component: StaffView,},
     {path: '/admin', component: AdminView},
 
-    {path: '/test',component: buffer},
-    {path: '/test/1',component:openAccount},
-    {path: '/test/2',component:saveMoney},
-    {path: '/test/3',component:drawMoney},
-    {path: '/test/4',component:queryAccount},
-    {path: '/test/5',component:queryRecords},
-    {path: '/test/6',component:transMoney},
-    {path: '/test/7',component:changePassword},
-    {path: '/test/8',component: closeAccount},
+    {path: '/act'/'buffer',component: buffer},
+    {path: '/act/openAccount',component:openAccount},
+    {path: '/act/saveMoney',component:saveMoney},
+    {path: '/act/drawMoney',component:drawMoney},
+    {path: '/act/queryAccount',component:queryAccount},
+    {path: '/act/queryRecords',component:queryRecords},
+    {path: '/act/transMoney',component:transMoney},
+    {path: '/act/changePassword',component:changePassword},
+    {path: '/act/closeAccount',component: closeAccount},
+    {path: '/act/message',component: ExecutionMS},
 
 
 
