@@ -1,6 +1,8 @@
 import {createRouter, createWebHashHistory} from 'vue-router'
 
 import loginView from "@/views/Login.vue";
+import HomeView from "@/views/Home.vue"
+import PersonalView from "@/views/Profile.vue"
 import IndexView from "@/views/Index.vue";
 import StaffView from "@/views/Staff.vue"
 import AdminView from "@/views/Admin.vue";
@@ -19,20 +21,23 @@ import ExecutionMS from "@/components/ExecutionMS.vue";
 const routes = [
     {path: '/', component: IndexView},
     {path: '/login', component: loginView},
-    {path: '/staff', component: StaffView,},
+    {path: '/staff', component: StaffView,children:[
+            {path: '', component: HomeView},
+            {path: '/profile', component: PersonalView},
+            {path: '/buffer',component: buffer},
+
+            {path: '/openAccount',component:openAccount},
+            {path: '/saveMoney',component:saveMoney},
+            {path: '/drawMoney',component:drawMoney},
+            {path: '/queryAccount',component:queryAccount},
+            {path: '/queryRecords',component:queryRecords},
+            {path: '/transMoney',component:transMoney},
+            {path: '/changePassword',component:changePassword},
+            {path: '/closeAccount',component: closeAccount},
+            {path: '/message',component: ExecutionMS},
+
+        ]},
     {path: '/admin', component: AdminView},
-
-    {path: '/act'/'buffer',component: buffer},
-    {path: '/act/openAccount',component:openAccount},
-    {path: '/act/saveMoney',component:saveMoney},
-    {path: '/act/drawMoney',component:drawMoney},
-    {path: '/act/queryAccount',component:queryAccount},
-    {path: '/act/queryRecords',component:queryRecords},
-    {path: '/act/transMoney',component:transMoney},
-    {path: '/act/changePassword',component:changePassword},
-    {path: '/act/closeAccount',component: closeAccount},
-    {path: '/act/message',component: ExecutionMS},
-
 ]
 
 const router = createRouter({

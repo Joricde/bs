@@ -68,16 +68,17 @@ let req = {
     '/api/staff/login':cFuc({
         name: '@name',
         staffId: /[0-9]{8}/,
-        'staffLevel|1': [1, 2, 999],
+        'staffLevel|1': [0, 1, 2],
+        number:Mock.Random.integer(0,99),
         token: Mock.Random.paragraph(),
     }),
     '/api/staff/logout':cFuc({
         name: '@name',
         staffId: /[0-9]{8}/,
-        'staffLevel|1': [1, 2, 999],
+        'staffLevel|1': [0, 1, 2],
         token: Mock.Random.paragraph()
     }),
-    '/api/staff/deptStaff':() => {
+    '/api/staff/deptStaff':(() => {
         let n = Mock.Random.integer(0, 99)
         let st = []
         for (let i = 0; i < n; i++) {
@@ -85,7 +86,7 @@ let req = {
                 {
                     name: '@name',
                     staffId: /[0-9]{8}/,
-                    'staffLevel|1': [1, 2, 999],
+                    'staffLevel|1': [0, 1, 2],
                 }
             )
         }
@@ -93,7 +94,7 @@ let req = {
             'number': n,
             'staff': st
         })
-    },
+    })(),
     '/api/staff/dailyReport':cFuc({
         time: Mock.Random.datetime(),
         content: Mock.Random.paragraph()
@@ -113,7 +114,7 @@ let req = {
             arr.push(                {
                 name: '@name',
                 staffId: /[0-9]{8}/,
-                'staffLevel|1': [1, 2, 999],
+                'staffLevel|1': [0, 1, 2],
                 leader: '@name'
             })
         }
