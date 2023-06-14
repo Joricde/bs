@@ -1,5 +1,6 @@
 <script>
 import {defineComponent} from 'vue'
+import router from "@/router/routers";
 
 export default defineComponent({
   name: "OpenAccount",
@@ -64,28 +65,30 @@ export default defineComponent({
       console.log(value )
       this.registerFormItem.accountType = value
     },
-    serUserType(value){
+    setUserType(value){
       console.log(value)
       this.registerFormItem.userType = value
     },
     onFocus() {
       this.$refs.registerFormRef.clearValidate()
     },
+    changeRouter(){
+      let that = this
+    },
     submitForm({values, errors}) {
       let that = this
-      console.log("open account ", values)
       if (!errors) {
-        that.$axios.post("/business/openAccount", values)
+        that.$axios.post("/business/openAccount", JSON.stringify(values))
             .then((response) => {
               let resData = response["data"]
-              if (resData.code === 200) {
+              if (resData.status === 200) {
                 that.$message.success({
-                  message: resData["data"]["message"]
+                  content: resData["data"]["message"]
                 })
-                that.$router.push("/")
+                that.$router.push("/act/message")
               } else {
                 that.$message.error({
-                      message: resData["data"]["message"]
+                  content: resData["data"]["message"]
                     }
                 )
               }
@@ -158,7 +161,7 @@ export default defineComponent({
         </a-radio-group>
       </a-form-item>
       <a-form-item label="用户类型" field="userType" >
-        <a-radio-group :model-value="registerFormItem.userType" @change="serUserType">
+        <a-radio-group :model-value="registerFormItem.userType" @change="setUserType">
           <a-radio value="personal" >个人用户</a-radio>
           <a-radio value="company" >企业用户</a-radio>
         </a-radio-group>

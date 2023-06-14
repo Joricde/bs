@@ -6,7 +6,7 @@ export default defineComponent({
   data(){
     return{
       formItem:{
-        accountId: 10000000,
+        accountId: '10000000',
         password: "",
         money:0.00,
       },
@@ -30,11 +30,12 @@ export default defineComponent({
   methods: {
     submitForm({values, errors}) {
       let that = this
+      console.log(values)
       if (!errors) {
         that.$axios.post("/business/saveMoney", values)
             .then((response) => {
               let res = response["data"]
-              if (res.code === 200) {
+              if (res.status === 200) {
 
                 that.$message.success({
                   content: res["message"]
@@ -58,8 +59,10 @@ export default defineComponent({
 <template>
   <a-card class="box-card">
     <a-form
+        ref="SaveMoneyForm"
         layout="vertical"
         :rules="formRules"
+        :model="formItem"
         @submit="submitForm"
     >
       <a-form-item>
@@ -68,20 +71,21 @@ export default defineComponent({
         </a-typography-title>
       </a-form-item>
 
-      <a-form-item label="账号">
+      <a-form-item label="账号" field="accountId">
         <a-input placeholder="请填写账号" v-model.trim="formItem.accountId"/>
       </a-form-item>
-      <a-form-item label="账号密码">
+      <a-form-item label="账号密码" field="password">
         <a-input placeholder="请填写账号密码" v-model.trim="formItem.password"/>
       </a-form-item>
-      <a-form-item label="存储金额">
+      <a-form-item label="存储金额" field="accountId">
         <a-input-number placeholder="请填写存储金额"
                         v-model.trim="formItem.money"
+                        allow-clear
                         :min="0"
                         ::precision="2" />
       </a-form-item>
       <a-form-item>
-        <a-button type="primary" long>确定</a-button>
+        <a-button type="primary" long html-type="submit">确定</a-button>
       </a-form-item>
     </a-form>
   </a-card>

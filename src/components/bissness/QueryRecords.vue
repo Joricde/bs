@@ -8,7 +8,7 @@ export default defineComponent({
     return {
       rangeValue: [Date.now(), Date.now()],
       formItem: {
-        accountId: 10000000,
+        accountId: "10000000",
         password: "",
         optType: "all",
         startDate: Date.now(),

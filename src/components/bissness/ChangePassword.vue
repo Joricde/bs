@@ -7,7 +7,7 @@ export default defineComponent({
     return {
       formItem: {
         identification: "",
-        accountId: 10000000,
+        accountId: '10000000',
         password: "",
         newPassword: "",
         checkPassword: "",

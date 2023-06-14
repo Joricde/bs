@@ -6,7 +6,7 @@ export default defineComponent({
   data(){
     return{
       formItem:{
-        accountId: 10000000,
+        accountId: '10000000',
         password: "",
         money:0.00,
       },
@@ -60,6 +60,7 @@ export default defineComponent({
     <a-form
         layout="vertical"
         :rules="formRules"
+        :model="formItem"
         @submit="submitForm"
     >
       <a-form-item>

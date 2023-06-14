@@ -32,13 +32,18 @@ export default defineComponent({
       let that = this
       // values.money = values.money.toFixed(2)
       if (!errors) {
-        that.$axios.post(" /business/closeAccount", values)
+        that.$axios.post("/business/closeAccount", values)
             .then((response) => {
               let resData = response["data"]
+              console.log(resData)
+              that.$message.info({
+                id: 'myInfo',
+                content: `This is an info message `,
+                duration: 2000
+              })
+
               if (resData.code === 200) {
-                that.$message.success({
-                  message: resData["data"]["message"]
-                })
+
                 that.$router.push("/")
               } else {
                 that.$message.error({
