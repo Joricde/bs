@@ -1,6 +1,6 @@
 <script>
 import {defineComponent} from 'vue'
-
+import {Message} from "@arco-design/web-vue";
 export default defineComponent({
   name: "ProfileView",
   data() {
@@ -8,11 +8,36 @@ export default defineComponent({
       userInfo: {
         username: "xxx",
         staffId: '1123123',
-        staffLevel: 1,
+        staffLevel: 0,
+        staffLevelShow:'',
         number: 0
       },
       staffInfo: [],
-      columnLoading : false,
+      columnLoading: false,
+      columnsTemp: [
+        {
+          title: '姓名',
+          dataIndex: 'name',
+          sortable: {
+            sortDirections: ['ascend', 'descend']
+          }
+        },
+        {
+          title: '员工ID',
+          dataIndex: 'staffId',
+          sortable: {
+            sortDirections: ['ascend', 'descend']
+          }
+        },
+        {
+          title: '员工等级',
+          dataIndex: 'staffLevel',
+          sortable: {
+            sortDirections: ['ascend', 'descend']
+          }
+        },
+      ]
+
     }
   },
 
@@ -20,24 +45,32 @@ export default defineComponent({
     let that = this
     that.userInfo.username = that.$store.state.staffData.name
     that.userInfo.staffID = that.$store.state.staffData.staffId
-    that.userInfo.staffLevel = that.$store.state.staffData.staffLevel
+    that.userInfo.staffLevel = Number(that.$store.state.staffData.staffLevel)
+    that.userInfo.staffLevelShow = (() => {
+      let a = Number(that.$store.state.staffData.staffLevel)
+      return a === 0 ? '员工' : a === 1 ? '经理' : '主管'
+    })()
     that.userInfo.number = that.$store.state.staffData.number
-    that.getDeptStaff()
+    if (that.userInfo.staffLevel > 0) {
+      that.getDeptStaff()
+    }
   },
   methods: {
     generateReport() {
-      this.$message.error('n n m d')
-      console.log("g")
+      let that = this
+      that.$router.push({
+        path:'/report',
+        query:{
+          q:'staff'
+        }
+      })
     },
     getDeptStaff() {
       let that = this
-      console.log(that.$store.state.staffData.staffLevel)
-      if (that.$store.state.staffData.staffLevel>0)
         that.columnLoading = true
       that.$axios.post("/staff/deptStaff")
           .then((response) => {
             let res = response["data"]
-            console.log(res['data']['staff'])
             if (res.status === 200) {
               that.$message.success({
                 content: res["message"]
@@ -50,47 +83,18 @@ export default defineComponent({
                 that.staffInfo.push(s)
               }
               that.userInfo.number = that.staffInfo.length
+              setTimeout(() => {
+                that.columnLoading = false
+              }, 300);
             } else {
               that.$message.error(res["message"])
             }
           })
           .catch((error) => {
-            that.$message.error(error.response["data"]["message"])
+            that.$message.error("请求发送错误，请重试")
           })
-      setTimeout(()=>{that.columnLoading = false}, 1000);
-
-
     },
 
-  },
-  setup() {
-    const columnsTemp = [
-      {
-        title: '姓名',
-        dataIndex: 'name',
-        sortable: {
-          sortDirections: ['ascend', 'descend']
-        }
-      },
-      {
-        title: '员工ID',
-        dataIndex: 'staffId',
-        sortable: {
-          sortDirections: ['ascend', 'descend']
-        }
-      },
-      {
-        title: '员工等级',
-        dataIndex: 'staffLevel',
-        sortable: {
-          sortDirections: ['ascend', 'descend']
-        }
-      },
-    ]
-
-    return {
-      columnsTemp
-    }
   },
 })
 </script>
@@ -106,7 +110,7 @@ export default defineComponent({
           <a-tag>{{ userInfo.staffID }}</a-tag>
         </a-descriptions-item>
         <a-descriptions-item label="员工等级">
-          <a-tag>{{ userInfo.staffLevel }}</a-tag>
+          <a-tag>{{ userInfo.staffLevelShow }}</a-tag>
         </a-descriptions-item>
         <a-descriptions-item label="今日报表">
           <a-tag checkable color="arcoblue" :default-checked="true" @check="generateReport">
@@ -114,10 +118,7 @@ export default defineComponent({
           </a-tag>
         </a-descriptions-item>
       </a-descriptions>
-      <a-collapse :bordered="false"
-                  @change="getDeptStaff"
-                  v-if="userInfo.staffLevel>0">
-        <a-space direction="vertical" size="small" fill>
+        <a-space direction="vertical" size="small" fill v-if="userInfo.staffLevel>0">
           <a-typography-title :heading="6">
             {{ '管理部门：共' + userInfo.number + '人' }}
             <a-button type="primary" @click="getDeptStaff">查询</a-button>
@@ -132,7 +133,6 @@ export default defineComponent({
                    :loading="columnLoading"
           />
         </a-space>
-      </a-collapse>
     </a-space>
   </a-layout-content>
 </template>

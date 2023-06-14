@@ -10,6 +10,24 @@ let cFuc =  (data)=> {
     }
 }
 
+let report = (()=>{
+    let n = Mock.Random.integer(0, 99)
+    let dr = []
+    for (let i = 0; i < n; i++) {
+        dr.push(
+            {
+                time: Mock.Random.datetime(),
+                content: Mock.Random.paragraph()
+            }
+        )
+    }
+    return {
+        'status|1': [200,400],  //[200, 301, 400, 404, 500, 501]
+        'message|1': ['success','error', 'warning'], // 'success',
+        'data': dr
+    }
+})
+
 
 let req = {
     '/api/business/openAccount':cFuc({
@@ -95,11 +113,7 @@ let req = {
             'staff': st
         })
     })(),
-    '/api/staff/dailyReport':cFuc({
-        time: Mock.Random.datetime(),
-        content: Mock.Random.paragraph()
-    }),
-
+    '/api/staff/dailyReport':report(),
 
     '/api/admin/login':cFuc({
         adminId: /[0-9]{8}/,
@@ -107,7 +121,7 @@ let req = {
     }),
     '/api/admin/logout':cFuc({}),
 
-    '/api/admin/queryStaff':()=>{
+    '/api/admin/queryStaff':(()=>{
         let n = Mock.Random.integer(1,99)
         let arr = []
         for (let i = 0; i < n; i++) {
@@ -118,14 +132,13 @@ let req = {
                 leader: '@name'
             })
         }
-        return cFuc({
-            arr
-        })
-    },
-    '/api/admin/allRecord': cFuc({
-        time: Mock.Random.datetime(),
-        content: Mock.Random.paragraph()
-    })
+        return {
+            'status|1': [200,400],  //[200, 301, 400, 404, 500, 501]
+            'message|1': ['success','error', 'warning'], // 'success',
+            'data': arr
+        }
+    })(),
+    '/api/admin/allRecord': report()
 }
 
 for (let key in req) {

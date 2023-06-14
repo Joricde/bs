@@ -1,10 +1,10 @@
 import {createRouter, createWebHashHistory} from 'vue-router'
 
 import loginView from "@/views/Login.vue";
-import HomeView from "@/views/Home.vue"
-import PersonalView from "@/views/Profile.vue"
-import IndexView from "@/views/Index.vue";
 import StaffView from "@/views/Staff.vue"
+import PersonalView from "@/views/Profile.vue"
+import Welcome from "@/views/Welcome.vue";
+import IndexView from "@/views/Index.vue"
 import AdminView from "@/views/Admin.vue";
 
 import openAccount from "@/components/bissness/OpenAccount.vue";
@@ -17,13 +17,17 @@ import changePassword from "@/components/bissness/ChangePassword.vue";
 import closeAccount from "@/components/bissness/CloseAccount.vue";
 import buffer from "@/test/BufferTest.vue";
 import ExecutionMS from "@/components/ExecutionMS.vue";
+import ReportForms from "@/components/ReportForms.vue";
 
 const routes = [
-    {path: '/', component: IndexView},
+    {path: '/', component: Welcome},
     {path: '/login', component: loginView},
-    {path: '/staff', component: StaffView,children:[
-            {path: '', component: HomeView},
+    {path: '/home', component: IndexView,children:[
+            {path: '/staff', component: StaffView},
             {path: '/profile', component: PersonalView},
+
+            {path: '/admin', component: AdminView},
+
             {path: '/buffer',component: buffer},
 
             {path: '/openAccount',component:openAccount},
@@ -34,10 +38,13 @@ const routes = [
             {path: '/transMoney',component:transMoney},
             {path: '/changePassword',component:changePassword},
             {path: '/closeAccount',component: closeAccount},
-            {path: '/message',component: ExecutionMS},
+
+            {path: '/message',component: ExecutionMS, props:true},
+            {path: '/report',component: ReportForms,
+                props: route => ({ reqPath: route.query })},
 
         ]},
-    {path: '/admin', component: AdminView},
+
 ]
 
 const router = createRouter({

@@ -5,7 +5,7 @@ const defaultState = ()=>{
         staffData: {
             name: sessionStorage.getItem('name')||"",
             staffId: sessionStorage.getItem('staffId')||"",
-            staffLevel: sessionStorage.getItem('staffLevel')||"",
+            staffLevel: sessionStorage.getItem('staffLevel')||0,
             number:sessionStorage.getItem('number')||0,
         },
         token: sessionStorage.getItem('token')||"",

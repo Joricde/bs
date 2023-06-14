@@ -1,37 +1,21 @@
 <template>
-  <a-layout class="layout-demo">
-    <a-layout-sider collapsible breakpoint="xl">
-      <div class="logo"/>
-      <a-menu
-          :default-active-key="['01']"
-          :style="{ width: '100%' }"
-          @menu-item-click="onClickMenuItem"
-      >
-        <a-menu-item key="01">
-          <icon-home/>
-          业务系统
-        </a-menu-item>
-        <a-menu-item key="02">
-          <icon-user/>
-          个人页面
-        </a-menu-item>
-      </a-menu>
-    </a-layout-sider>
-    <a-layout>
-      <a-layout-header>
-        <a-button style="float: right; margin-right: 20px;margin-top: 15px " @click="logout">
-          <icon-export style="margin-right: 8px"/>
-          登出
-        </a-button>
-      </a-layout-header>
-      <a-layout style="padding: 0 24px;">
-        <a-breadcrumb :style="{ margin: '16px 0' }">
-        </a-breadcrumb>
-        <router-view></router-view>
-        <a-layout-footer></a-layout-footer>
-      </a-layout>
-    </a-layout>
-  </a-layout>
+  <a-layout-content>
+    <a-typography :style="{ marginLeft: '30px', marginTop: '20px' }">
+      <a-typography-text>
+        欢迎：{{ username }}
+      </a-typography-text>
+    </a-typography>
+    <a-space direction="vertical" fill size="large" style="margin-top: 25px">
+      <a-row class="grid-demo" :gutter="24" v-for="row in buttons">
+        <a-col :span="8" :offset="2">
+          <a-button type="primary" @click="clickButton(row[0].key)" long>{{ row[0].text }}</a-button>
+        </a-col>
+        <a-col :span="8">
+          <a-button type="primary" @click="clickButton(row[1].key)" long>{{ row[1].text }}</a-button>
+        </a-col>
+      </a-row>
+    </a-space>
+  </a-layout-content>
 </template>
 <script>
 
@@ -40,57 +24,39 @@ export default {
   data() {
     return {
       username: "xxx",
+      buttons: [
+        [
+          {text: "开户", key: "openAccount"},
+          {text: "存款", key: "saveMoney"},
+        ],
+        [
+          {text: "取款", key: "drawMoney"},
+          {text: "查询", key: "queryAccount"},
+        ],
+        [
+          {text: "转账", key: "transMoney"},
+          {text: "修改密码", key: "changePassword"},
+        ],
+        [
+          {text: "销户", key: "closeAccount"},
+          {text: "企业账户操作人", key: "corporateAccount"},
+        ],
+      ]
     }
   },
+  mounted() {
+    let that = this
+    that.username = that.$store.state.staffData.name
+  },
   methods: {
-    onClickMenuItem(key) {
+    clickButton(key) {
       let that = this
-      if (key === "01")
-        that.$router.push('/staff')
-      else
-        that.$router.push('/profile')
-    },
-    logout() {
-      let that = this
-      that.$store.commit('clearState')
-      that.$router.push('/login')
+      that.$router.push(key)
     },
   },
 };
 </script>
 <style scoped>
-.layout-demo {
-  height: 96vh;
-  width: calc(max(600px, 90vw));
-  position: absolute;
-  left: calc(min(30px, 5%));
-  top: calc(min(15px, 3%));
-//right: calc(min(30px,5%)); background: var(--color-fill-2); border: 1px solid var(--color-border);
-}
-
-.layout-demo :deep(.arco-layout-sider) .logo {
-  height: 32px;
-  margin: 12px 8px;
-  background: rgba(255, 255, 255, 0.2);
-}
-
-.layout-demo :deep(.arco-layout-sider-light) .logo {
-//background: var(--color-fill-2);
-}
-
-.layout-demo :deep(.arco-layout-header) {
-  height: 64px;
-  line-height: 64px;
-  background: var(--color-bg-3);
-}
-
-.layout-demo :deep(.arco-layout-footer) {
-  height: 48px;
-  color: var(--color-text-2);
-  font-weight: 400;
-  font-size: 14px;
-  line-height: 48px;
-}
 
 .layout-demo :deep(.arco-layout-content) {
   color: var(--color-text-2);

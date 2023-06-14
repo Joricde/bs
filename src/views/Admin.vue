@@ -1,124 +1,147 @@
 <template>
-  <a-layout class="layout-demo">
-    <a-layout-sider collapsible breakpoint="xl">
-      <div class="logo"/>
-      <a-menu
-          :default-active-key="[1]"
-          :style="{ width: '100%' }"
-          @menu-item-click="onClickMenuItem"
-      >
-        <a-menu-item :key=1>
-          <icon-home/>
-          系统管理员
-        </a-menu-item>
-      </a-menu>
-    </a-layout-sider>
-    <a-layout>
-      <a-layout-header>
-        <a-button style="float: right; margin-right: 20px;margin-top: 15px " @click="logout">
-          <icon-export style="margin-right: 8px"/>
-          登出
-        </a-button>
-      </a-layout-header>
-      <a-layout style="padding: 0 24px;">
-        <a-breadcrumb :style="{ margin: '16px 0' }">
-        </a-breadcrumb>
-        <a-layout-content >
-          <a-space direction="vertical" size="large" fill :style="{ marginLeft: '50px', marginTop: '50px' }">
+  <a-layout style="padding: 0 24px;">
+    <a-breadcrumb :style="{ margin: '16px 0' }">
+    </a-breadcrumb>
+    <a-layout-content>
+      <a-space direction="vertical" size="large" fill :style="{ marginLeft: '50px', marginTop: '50px' }">
 
-            <a-typography :style="{ marginLeft: '30px', marginTop: '20px' }">
-              <a-typography-text>
-                您好：{{ username }}管理员
-              </a-typography-text>
-            </a-typography>
-            <a-collapse  :bordered="false" @change="getDeptStaff" style="margin-right: 20px">
-              <a-collapse-item header="雇员管理"  key="1" :style="customStyle">
-                <div>人口1</div>
-                <div>人口2</div>
-              </a-collapse-item>
-              <a-collapse-item header="总报表"  key="2" :style="customStyle">
-                <div>人口1</div>
-                <div>人口2</div>
-              </a-collapse-item>
-              <a-collapse-item header="总日志"  key="3" :style="customStyle">
-                <div>人口1</div>
-                <div>人口2</div>
-              </a-collapse-item>
-            </a-collapse>
-          </a-space>
-        </a-layout-content>
-        <a-layout-footer></a-layout-footer>
-      </a-layout>
-    </a-layout>
+        <a-typography :style="{ marginLeft: '30px', marginTop: '20px' }">
+          <a-typography-text>
+            您好：{{ username }}管理员
+          </a-typography-text>
+        </a-typography>
+        <a-space direction="vertical" size="small" fill>
+          <a-typography-title :heading="6">
+            {{ '雇员管理：' }}
+            <a-button type="primary" @click="getDeptStaff">查询</a-button>
+          </a-typography-title>
+          <a-table :columns="columnsTemp"
+                   :data="staffInfo"
+                   column-resizable
+                   table-layout-fixed
+                   :virtual-list-props="{height:300}"
+                   :pagination="false"
+                   style="margin-right: 5%"
+                   :loading="columnLoading"
+          />
+          <a-typography-title :heading="6">
+            {{ '总报表：' }}
+            <a-button type="primary" @click="generateReport">查询</a-button>
+          </a-typography-title>
+        </a-space>
+
+      </a-space>
+    </a-layout-content>
+    <a-layout-footer></a-layout-footer>
   </a-layout>
 </template>
 <script>
 
 
 export default {
-  setup() {
-    const customStyle = {
-      borderRadius: '6px',
-      marginBottom: '18px',
-      border: 'none',
-      overflow: 'hidden',
-    }
-
-    return {
-      customStyle
-    }
-  },
   name: "AdminView",
   data() {
     return {
       username: "xxx",
       userInfo: {
         username: "xxx",
-        staffID: 1123,
+        staffID: "1123",
         staffLevel: "lv 1",
-        number:1
-      }
+        number: 1
+      },
+      customStyle: {
+        borderRadius: '6px',
+        marginBottom: '18px',
+        border: 'none',
+        overflow: 'hidden',
+      },
+      staffInfo: [],
+      columnLoading: false,
+      columnsTemp: [
+        {
+          title: '姓名',
+          dataIndex: 'name',
+          sortable: {
+            sortDirections: ['ascend', 'descend']
+          }
+        },
+        {
+          title: '员工ID',
+          dataIndex: 'staffId',
+          sortable: {
+            sortDirections: ['ascend', 'descend']
+          }
+        },
+        {
+          title: '员工等级',
+          dataIndex: 'staffLevel',
+          sortable: {
+            sortDirections: ['ascend', 'descend']
+          }
+        },
+        {
+          title: '所属领导',
+          dataIndex: 'leader',
+          sortable: {
+            sortDirections: ['ascend', 'descend']
+          }
+        }
+      ]
+
     }
   },
+  created() {
+    this.getDeptStaff()
+  },
   methods: {
-    onClickMenuItem(key) {
-      this.$message.info({content: `You select ${key}`, showIcon: true});
-    },
     logout() {
-      console.log("logout")
-    },
-    openAccount() {
-      console.log("test 1");
-    },
-    saveMoney() {
+      let that = this
+      that.$store.commit('clearState')
+      that.$router.push('/login')
 
     },
-    drawMoney() {
+    getDeptStaff() {
+      let that = this
+      console.log(that.$store.state.staffData.staffLevel)
+      if (that.$store.state.staffData.staffLevel > 0)
+        that.columnLoading = true
+      that.$axios.post("/admin/queryStaff")
+          .then((response) => {
+            let res = response["data"]
+            console.log(res['data'])
+            if (res.status === 200) {
+              that.$message.success({
+                content: res["message"]
+              })
+              that.staffInfo = []
+              let l = 0
+              for (let s of res['data']) {
+                l = s.staffLevel === 0 ? '员工' : s.staffLevel === 1 ? '经理' : '主管'
+                s.staffLevel = l
+                that.staffInfo.push(s)
+              }
+              that.userInfo.number = that.staffInfo.length
+            } else {
+              that.$message.error(res["message"])
+            }
+          })
+          .catch((error) => {
+            that.$message.error("请求发送错误，请重试")
+          })
+      setTimeout(() => {
+        that.columnLoading = false
+      }, 1000);
 
     },
-    queryAccount() {
-
+    generateReport() {
+      let that = this
+      that.$router.push({
+        path: '/report',
+        query: {
+          q: 'admin'
+        }
+      })
     },
-    transMoney() {
-
-    },
-    changePassword() {
-
-    },
-    closeAccount() {
-
-    },
-    corporateAccount() {
-
-    },
-    generateReport(){
-      console.log("g")
-    },
-    getDeptStaff(activeKey){
-      if (activeKey[0] === '1'){
-        console.log(activeKey)
-      }
-    }
   }
 };
 </script>
@@ -129,8 +152,7 @@ export default {
   position: absolute;
   left: calc(min(30px, 5%));
   top: calc(min(15px, 3%));
-//right: calc(min(30px,5%)); background: var(--color-fill-2);
-  border: 1px solid var(--color-border);
+//right: calc(min(30px,5%)); background: var(--color-fill-2); border: 1px solid var(--color-border);
 }
 
 .layout-demo :deep(.arco-layout-sider) .logo {
