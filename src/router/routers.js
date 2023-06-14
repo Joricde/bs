@@ -19,37 +19,62 @@ import buffer from "@/test/BufferTest.vue";
 import ExecutionMS from "@/components/ExecutionMS.vue";
 import ReportForms from "@/components/ReportForms.vue";
 
+import store from "@/store";
+
 const routes = [
     {path: '/', component: Welcome},
     {path: '/login', component: loginView},
-    {path: '/home', component: IndexView,children:[
+    {
+        path: '/home', component: IndexView,
+        meta: {requiresAuth: true},
+        children: [
             {path: '/staff', component: StaffView},
             {path: '/profile', component: PersonalView},
 
             {path: '/admin', component: AdminView},
 
-            {path: '/buffer',component: buffer},
+            {path: '/buffer', component: buffer},
 
-            {path: '/openAccount',component:openAccount},
-            {path: '/saveMoney',component:saveMoney},
-            {path: '/drawMoney',component:drawMoney},
-            {path: '/queryAccount',component:queryAccount},
-            {path: '/queryRecords',component:queryRecords},
-            {path: '/transMoney',component:transMoney},
-            {path: '/changePassword',component:changePassword},
-            {path: '/closeAccount',component: closeAccount},
+            {path: '/openAccount', component: openAccount},
+            {path: '/saveMoney', component: saveMoney},
+            {path: '/drawMoney', component: drawMoney},
+            {path: '/queryAccount', component: queryAccount},
+            {path: '/queryRecords', component: queryRecords},
+            {path: '/transMoney', component: transMoney},
+            {path: '/changePassword', component: changePassword},
+            {path: '/closeAccount', component: closeAccount},
 
-            {path: '/message',component: ExecutionMS, props:true},
-            {path: '/report',component: ReportForms,
-                props: route => ({ reqPath: route.query })},
+            {path: '/message', component: ExecutionMS, props: true},
+            {
+                path: '/report', component: ReportForms,
+                props: route => ({reqPath: route.query})
+            },
 
-        ]},
+        ]
+    },
 
 ]
 
 const router = createRouter({
     history: createWebHashHistory(),
     routes,
+})
+
+router.beforeEach((to, from) => {
+    if (to.meta['requiresAuth'] && !store.state.token) {
+
+        return {
+            path: '/login',
+            query: { redirect: to.fullPath },
+        }
+    }
+    if (to.path==='/home'){
+        if (store.state.adminId) {
+            return { path: '/admin' }
+        } else {
+            return { path: '/staff' }
+        }
+    }
 })
 
 export default router

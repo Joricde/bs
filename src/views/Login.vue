@@ -133,7 +133,7 @@ export default {
                 })
                 that.$store.commit("setToken", res.data["token"])
                 that.$store.commit("setStaff", res.data)
-                that.$router.push("/staff")
+                that.$router.push("/home")
               }else {
                 that.$message.error({
                   content:res["message"]
@@ -168,7 +168,7 @@ export default {
                 })
                 that.$store.commit("setToken", res.data["token"])
                 that.$store.commit("setAdminId", res.data["adminId"])
-                that.$router.push("/admin")
+                that.$router.push("/home")
               }else {
                 that.$message.error(res["message"])
               }
