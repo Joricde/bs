@@ -3,9 +3,10 @@ import {defineComponent} from 'vue'
 
 export default defineComponent({
   name: "ExecutionMS",
-  props: ['resp'],
+  // props: ['passData'],
   data() {
     return {
+      passData:{},
       result: {
         status: 'success',
         message: ''
@@ -29,36 +30,37 @@ export default defineComponent({
   methods: {
     gotoRouter() {
       let that = this
+      that.$store.commit("setExecutionMS",{})
       return that.$router.push('/home')
     },
-    passData() {
-      this.$emit('passData', this.respData)
-    },
+
     showContent() {
       let i = 0
     },
-
-
   },
-  watch:{
-    respData(value){
-      this.result.status = value === 200 ? 'success' : 'error'
-    }
-  }
+  created() {
+    let that = this
+    let resp = that.$store.state.executionMS
+    console.log(resp)
+    that.result.status = resp.status === 200 ? 'success' : 'error'
+    that.result.message  = resp.message
+    that.passData = resp.data
+    console.log(that.passData)
+  },
 
 })
 </script>
 
 <template>
   <a-card class="box-card">
-    <a-result title="操作结果" :status="result.status">
+    <a-result title="操作结果" :status="result.status" :subtitle="result.message">
       <template #extra>
         <a-space>
           <a-button type='primary' @click="gotoRouter">返回</a-button>
         </a-space>
       </template>
       <a-list>
-        <a-list-item v-for="(value,key) in respData">
+        <a-list-item v-for="(value,key) in passData" >
           {{params[key]}}: {{value}}
         </a-list-item>
       </a-list>
